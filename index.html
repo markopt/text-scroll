@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cdn.split.io/sdk/split-browser-0.4.0.full.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Auto Text Effect</title>
+  </head>
+  <body>
+    <h1 id="text">Starting...</h1>
+
+    <div>
+      <label for="speed">Speed:</label>
+      <input type="number" name="speed" id="speed" value="1" min="1" max="10" step="1">
+    </div>
+    <script>
+      var factory = splitio.SplitFactory({
+        core: {
+          authorizationKey: 'vdv97frpo8dmbdap5nbe8q22pmauj1hj519',
+          key: 'mark'
+        }
+      });
+
+      var client = factory.client();
+
+      function createSDKListeners() {
+        client.on(client.Event.SDK_READY, function() {
+            console.log('The SDK is ready!');
+            splitSet(client);
+        });
+
+        client.on(client.Event.SDK_UPDATE, function () {
+            console.log('The SDK has been updated!');
+            splitSet(client);
+        });
+      }
+
+      $('document').ready(function() { 
+        createSDKListeners();
+      });
+
+      function splitSet(client) {
+          var TreatmentResult = client.getTreatmentWithConfig('auto-text');
+          var configs = JSON.parse(TreatmentResult.config);
+          var treatment = TreatmentResult.treatment;
+          let speed = 300 / parseInt(configs.speed)
+          document.body.style.backgroundColor = configs.body_color;
+          let text = configs.text
+          const textEl = document.getElementById('text')
+          const speedEl = document.getElementById('speed')
+          let idx = 1  
+          console.log(text)
+          console.log(speed)
+
+          writeText()
+
+          
+          
+          function writeText() {
+            // const textEl = document.getElementById('text')
+            // const speedEl = document.getElementById('speed')
+            // let idx = 1  
+            console.log(text)
+            textEl.innerText = text.slice(0, idx)
+
+            idx++
+
+            if(idx > text.length) {
+              idx = 1
+            }
+
+            setTimeout(writeText, speed)
+
+            speedEl.addEventListener('input', (e) => speed = 300 / e.target.value)
+          };
+          // const textEl = document.getElementById('text')
+          // const speedEl = document.getElementById('speed')
+          // let idx = 1
+          
+          // writeText(speed,phrase)
+          // console.log(phrase)
+          // textEl.innerText = phrase.slice(0, idx)
+
+          //   idx++
+
+          //   if(idx > text.length) {
+          //     idx = 1
+          //   }
+
+          //   setTimeout(writeText, speed)
+
+          // speedEl.addEventListener('input', (e) => speed = 300 / e.target.value)
+      };
+    </script>
+    <!-- <script src="script.js"></script> -->
+  </body>
+</html>
